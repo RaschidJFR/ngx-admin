@@ -7,4 +7,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/puzzles',
     home: true,
   },
+  {
+    title: 'Log In',
+    icon: 'person-outline',
+    link: '/auth/login',
+    home: true,
+  },
 ];
