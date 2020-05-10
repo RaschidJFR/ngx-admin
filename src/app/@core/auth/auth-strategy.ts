@@ -13,7 +13,6 @@ import { from, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParseService } from '../parse/parse.service';
-import { ParseAuthToken } from './auth-token';
 
 interface Options {
   login?: {
@@ -54,7 +53,7 @@ export class ParseAuthStrategy extends NbAuthStrategy {
   }
 
   authenticate(data: { email: string, password: string }) {
-    const module = 'login';
+    const module: keyof Options = 'login';
     return from(Parse.User.logIn(data.email, data.password)).pipe(
       map((user) => {
         return new NbAuthResult(
@@ -73,18 +72,16 @@ export class ParseAuthStrategy extends NbAuthStrategy {
   }
 
   logout() {
-    const module = 'logout';
-    // from(Parse.User.logOut())
-    // return of(true).pipe(
-    //   map(() => {
-    //     console.debug('Logged out');
-    //     return new NbAuthResult(true)//, null, this.getOption(`${module}.redirect.success`));
-    //   }),
-    //   catchError((err) => {
-    //     return this.handleResponseError(err, module);
-    //   }),
-    // );
-    return of(new NbAuthResult(true, null, '/auth/login'))
+    const module: keyof Options = 'logout';
+    return from(Parse.User.logOut())
+      .pipe(
+        map(() => {
+          return new NbAuthResult(true, null, this.getOption(`${module}.redirect.success`));
+        }),
+        catchError((err) => {
+          return this.handleResponseError(err, module);
+        }),
+      );
   }
 
   register() {
@@ -107,14 +104,14 @@ export class ParseAuthStrategy extends NbAuthStrategy {
     return of(new NbAuthResult(false));
   }
 
-  protected handleResponseError(err: any, module: string): Observable<NbAuthResult> {
+  protected handleResponseError(err: any, _module: string): Observable<NbAuthResult> {
     console.error(err);
     const errors = ['Something went wrong.'];
     return of(
       new NbAuthResult(
         false,
         err,
-        this.getOption(`${module}.redirect.failure`),
+        null,
         errors,
       ));
   }

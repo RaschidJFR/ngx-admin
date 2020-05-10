@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil, filter } from 'rxjs/operators';
+import { map, takeUntil, filter, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AuthService } from '../../../@core/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-header',
@@ -40,6 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
+    private router: Router,
     private themeService: NbThemeService,
     private auth: AuthService,
     private layoutService: LayoutService,
