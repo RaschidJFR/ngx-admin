@@ -1,7 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
-import { NbAuthService, NbTokenService, NB_AUTH_STRATEGIES } from '@nebular/auth';
+import { NbAuthService, NbTokenService, NB_AUTH_STRATEGIES, NbAuthResult } from '@nebular/auth';
 import * as Parse from 'parse';
 import { ParseService } from '../parse/parse.service';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService extends NbAuthService {
@@ -18,7 +20,14 @@ export class AuthService extends NbAuthService {
     return Parse.User.current();
   }
 
-  logout() {
-    return super.logout('parse');
+  logout(): Observable<NbAuthResult> {
+    this.tokenService.clear();
+    return super.logout('parse')
+      .pipe(
+        tap((result) => {
+          if (result.isSuccess())
+            this.tokenService.clear();
+        })
+      );
   }
 }

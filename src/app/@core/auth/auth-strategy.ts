@@ -5,12 +5,15 @@ import {
   NbAuthSimpleToken,
   NbPasswordAuthStrategyOptions,
   NbAuthStrategyOptions,
+  NbAuthToken,
+  NbAuthTokenClass,
 } from '@nebular/auth';
 import * as Parse from 'parse';
 import { from, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParseService } from '../parse/parse.service';
+import { ParseAuthToken } from './auth-token';
 
 interface Options {
   login?: {
@@ -27,7 +30,7 @@ interface Options {
 
 interface ParseAuthStrategyOptions extends NbAuthStrategyOptions, Options {
   token: {
-    class: typeof NbAuthSimpleToken
+    class: NbAuthTokenClass<NbAuthSimpleToken>
   };
 }
 
@@ -71,15 +74,17 @@ export class ParseAuthStrategy extends NbAuthStrategy {
 
   logout() {
     const module = 'logout';
-    return from(Parse.User.logOut()).pipe(
-      map(() => {
-        console.debug('Logged out');
-        return new NbAuthResult(true, null, this.getOption(`${module}.redirect.success`));
-      }),
-      catchError((err) => {
-        return this.handleResponseError(err, module);
-      }),
-    );
+    // from(Parse.User.logOut())
+    // return of(true).pipe(
+    //   map(() => {
+    //     console.debug('Logged out');
+    //     return new NbAuthResult(true)//, null, this.getOption(`${module}.redirect.success`));
+    //   }),
+    //   catchError((err) => {
+    //     return this.handleResponseError(err, module);
+    //   }),
+    // );
+    return of(new NbAuthResult(true, null, '/auth/login'))
   }
 
   register() {

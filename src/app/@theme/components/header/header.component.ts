@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
+  userMenu = [{ title: 'Log out' }];
 
   constructor(private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
@@ -83,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   get user() {
     return {
-      name: this.auth.user && this.auth.user.getUsername()
+      name: this.auth.user && (this.auth.user.get('name') || this.auth.user.getUsername())
     };
   }
 
