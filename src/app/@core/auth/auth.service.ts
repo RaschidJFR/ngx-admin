@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { NbAuthService, NbTokenService, NB_AUTH_STRATEGIES, NbAuthResult } from '@nebular/auth';
 import * as Parse from 'parse';
 import { ParseService } from '../parse/parse.service';
-import { tap, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 

@@ -5,7 +5,6 @@ import {
   NbAuthSimpleToken,
   NbPasswordAuthStrategyOptions,
   NbAuthStrategyOptions,
-  NbAuthToken,
   NbAuthTokenClass,
 } from '@nebular/auth';
 import * as Parse from 'parse';
