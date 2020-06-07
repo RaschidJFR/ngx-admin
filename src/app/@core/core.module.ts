@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
+import { NbAuthModule } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { of as observableOf } from 'rxjs';
 
@@ -52,24 +52,10 @@ import { StatsProgressBarService } from './mock/stats-progress-bar.service';
 import { VisitorsAnalyticsService } from './mock/visitors-analytics.service';
 import { SecurityCamerasService } from './mock/security-cameras.service';
 import { MockDataModule } from './mock/mock-data.module';
-
-const socialLinks = [
-  {
-    url: 'https://github.com/akveo/nebular',
-    target: '_blank',
-    icon: 'github',
-  },
-  {
-    url: 'https://www.facebook.com/akveo/',
-    target: '_blank',
-    icon: 'facebook',
-  },
-  {
-    url: 'https://twitter.com/akveo_inc',
-    target: '_blank',
-    icon: 'twitter',
-  },
-];
+import { ParseModule } from './parse/parse.module';
+import { environment } from '../../environments/environment';
+import { ParseAuthStrategy } from './auth/auth-strategy';
+import { AuthModule } from './auth/auth.module';
 
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
@@ -103,22 +89,35 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
 export const NB_CORE_PROVIDERS = [
   ...MockDataModule.forRoot().providers,
   ...DATA_SERVICES,
-  ...NbAuthModule.forRoot({
 
+  ...NbAuthModule.forRoot({
     strategies: [
-      NbDummyAuthStrategy.setup({
-        name: 'email',
-        delay: 3000,
-      }),
+      ParseAuthStrategy.setup({
+        login: {
+          redirect: {
+            success: '/'
+          }
+        },
+        logout: {
+          redirect: {
+            success: '/auth/login'
+          }
+        }
+      })
     ],
     forms: {
       login: {
-        socialLinks: socialLinks,
-      },
-      register: {
-        socialLinks: socialLinks,
-      },
-    },
+        redirectDelay: 0,
+        strategy: 'parse',
+        rememberMe: false,
+      }
+    }
+  }).providers,
+
+  ...ParseModule.forRoot({
+    appId: environment.parse.appId,
+    javascriptKey: environment.parse.javascriptKey,
+    serverUrl: environment.parse.serverURL,
   }).providers,
 
   NbSecurityModule.forRoot({
@@ -148,9 +147,11 @@ export const NB_CORE_PROVIDERS = [
 @NgModule({
   imports: [
     CommonModule,
+    AuthModule,
   ],
   exports: [
     NbAuthModule,
+    AuthModule
   ],
   declarations: [],
 })

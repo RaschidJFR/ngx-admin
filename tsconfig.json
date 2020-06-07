@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "importHelpers": true,
     "module": "esnext",
     "outDir": "./dist/out-tsc",
@@ -18,7 +19,20 @@
       "dom"
     ],
     "plugins": [
-      { "name": "tslint-language-service"}
-    ]
+      {
+        "name": "tslint-language-service"
+      }
+    ],
+    "paths": {
+      "@core/*": [
+        "src/app/@core/*"
+      ],
+      "@environment": [
+        "src/environments/environment"
+      ],
+      "@lib/*": [
+        "src/lib/*"
+      ]
+    }
   }
 }

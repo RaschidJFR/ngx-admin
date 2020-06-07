@@ -10,4 +10,9 @@
 
 export const environment = {
   production: false,
+  parse: {
+    appId: '7tIc9AZ2HJAs9ICNGEsAh9xDqBWid6fzfzXICp4Z',
+    javascriptKey: '',
+    serverURL: 'http://localhost:1337/wizards',
+  },
 };
